@@ -10,6 +10,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.resolve(__dirname, '../client/build')));
 
+app.use(require('./routes'));
+
 // sequelize.sync({ force: false }).then(() => {
 //     app.listen(PORT, () => console.log(`Listening on port ${PORT}`))
 // })
