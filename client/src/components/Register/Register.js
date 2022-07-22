@@ -1,48 +1,63 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Particles from 'react-tsparticles';
 import { loadFull } from 'tsparticles';
 import Navigation from '../Navigation/Navigation.js';
+import { useNavigate } from 'react-router-dom';
 
-class Register extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            name: '',
-            email: '',
-            password: ''
-        }
-    }
+const Register = () => {
+    const [username, setUsername] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
 
-    async particlesInit(main){ 
+    const navigate = useNavigate();
+
+    async function particlesInit(main){ 
         console.log(main);
     
         await loadFull(main)
       }
     
-      particlesLoaded(container) {
+      function particlesLoaded(container) {
         console.log(container);
       }
 
-    onEmailChange = (event) => {
-        this.setState({ email: event.target.value });
+    async function onSubmitregister() {
+        try {
+            const response = await fetch('api/users', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Accept: 'application/json'
+                },
+                body: JSON.stringify({
+                    email: email,
+                    password: password,
+                    username: username
+                })
+            })
+
+            if(!response.ok) {
+                throw new Error(`Error! status: ${response.status}`);
+            }
+
+            const result = await response.json();
+
+            console.log(result)
+
+            navigate('/')
+
+        } catch (err) {
+            throw new Error(err.message)
+        }
     }
 
-    onPasswordChange = (event) => {
-        this.setState({ password: event.target.value });
-    }
-
-    onNameChange = (event) => {
-        this.setState({ name: event.target.value });
-    }
-
-    render() {
         return(
             <div>
                 <Particles
                     className="particles"
                     id='tsparticles'
-                    init={this.particlesInit}
-                    loaded={this.particlesLoaded}
+                    init={particlesInit}
+                    loaded={particlesLoaded}
                     options={{
                     fpsLimit: 120,
                     particles: {
@@ -94,19 +109,19 @@ class Register extends React.Component {
                             <legend className="f1 fw6 ph0 mh0">Register</legend>
                             <div className="mt3">
                                 <label className="db fw6 lh-copy f6" htmlFor="name">Name</label>
-                                <input onChange={this.onNameChange} className="pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100" type="text" name="name"  id="name" />
+                                <input onChange={(event) => setUsername(event.target.value)} className="pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100" type="text" name="name"  id="name" />
                             </div>
                             <div className="mt3">
                                 <label className="db fw6 lh-copy f6" htmlFor="email-address">Email</label>
-                                <input onChange={this.onEmailChange} className="pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100" type="email" name="email-address"  id="email-address" />
+                                <input onChange={(event) => setEmail(event.target.value)} className="pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100" type="email" name="email-address"  id="email-address" />
                             </div>
                             <div className="mv3">
                                 <label className="db fw6 lh-copy f6" htmlFor="password">Password</label>
-                                <input onChange={this.onPasswordChange} className="b pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100" type="password" name="password"  id="password" />
+                                <input onChange={(event) => setPassword(event.target.value)} className="b pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100" type="password" name="password"  id="password" />
                             </div>
                             </fieldset>
                             <div className="">
-                            <input className="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6 dib" type="submit" value="Register" />
+                            <input onClick={onSubmitregister} className="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6 dib" type="submit" value="Register" />
                             </div>
                             <div className="lh-copy mt3">
                             </div>
@@ -116,6 +131,5 @@ class Register extends React.Component {
             </div>
         )
     }
-}
 
 export default Register;

@@ -35,6 +35,19 @@ router.get('/:id', (req, res) => {
     });
 });
 
+// check login
+router.get('/loggedin/:id', (req, res) => {
+    if(req.session.loggedIn) {
+        if(req.session.user_id === req.params.id) {
+            return true;
+        } else {
+            return false;
+        }
+    } else {
+        return false;
+    }
+})
+
 // create user
 router.post('/', (req, res) => {
     User.create({

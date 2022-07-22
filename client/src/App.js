@@ -22,24 +22,7 @@ class App extends Component {
       imageUrl: '',
       box: {},
       isSignedIn: false,
-      user: {
-        id: '',
-        name: '',
-        email: '',
-        entries: 0,
-        joined: ''
-      }
     }
-  }
-
-  loadUser = (data) => {
-    this.setState({user: {
-      id: data.id,
-      name: data.name,
-      email: data.email,
-      entries: data.entries,
-      joined: data.joined
-    }})
   }
 
   onInputChange = (event) => {
@@ -173,7 +156,7 @@ class App extends Component {
             />
           <Navigation />
           <Logo />
-          <Rank name={this.state.user.name} entries={this.state.user.entries} />
+          <Rank />
           <ImageLinkForm onInputChange={this.onInputChange} onButtonSubmit={this.onButtonSubmit} />
           <FaceRecognition imageUrl={this.state.imageUrl} box={this.state.box} />
         </div>
